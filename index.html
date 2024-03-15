@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Les petits plats</title>
+    <link rel="stylesheet" href="./dist/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&display=swap"
+      rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@200..800&display=swap"
+      rel="stylesheet" />
+  </head>
+  <body>
+    <div
+      class="bg-banner bg-cover bg-center flex flex-col px-[51px] min-h-[80vh] relative">
+      <div class="absolute inset-0 bg-black opacity-30"></div>
+      <header class="pt-[69px] relative">
+        <a href="/">
+          <img
+            src="./assets/images/logo.png"
+            alt="Logo Les petits plats"
+            class="w-[207px]" />
+        </a>
+      </header>
+      <div class="flex flex-col items-center py-[169px] gap-8 relative">
+        <h1
+          class="text-yellow font-extrabold text-[44px] text-center max-w-[700px] font-Anton">
+          CHERCHEZ PARMI PLUS DE 1500 RECETTES DU QUOTIDIEN,SIMPLES ET
+          DÉLICIEUSES
+        </h1>
+        <div
+          class="bg-white rounded-[10px] pl-[20px] flex justify-between p-[10px] max-w-[954px] w-full">
+          <input
+            type="text"
+            placeholder="Rechercher une recette, un ingrédient, ..."
+            class="focus:outline-none bg-none w-full" />
+          <button
+            class="group flex items-center bg-black w-[50px] h-[50px] justify-center rounded-[10px] hover:bg-yellow">
+            <img
+              src="./assets/svg/search-icon.svg"
+              alt="search-icon"
+              class="group-hover:hidden w-[27px] h-[28px]" />
+            <img
+              src="./assets/svg/search-icon-2.svg"
+              alt="search-icon"
+              class="group-hover:block hidden w-[27px] h-[28px]" />
+          </button>
+        </div>
+      </div>
+    </div>
+    <main class="flex flex-col items-center gap-8"></main>
+  </body>
+  <script type="module" src="scripts/templates/card.js"></script>
+  <script type="module" src="scripts/pages/index.js"></script>
+</html>
