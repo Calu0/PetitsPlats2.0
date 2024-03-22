@@ -6,6 +6,8 @@
   :root {
     --yellow: rgba(255, 209, 91, 1);
     --black: rgba(27, 27, 27, 1);
+    --gray-bg: #ebebeb;
+    --gray: #7a7a7a;
   }
 
   html {

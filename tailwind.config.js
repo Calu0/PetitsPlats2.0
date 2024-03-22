@@ -9,6 +9,8 @@ export const theme = {
     colors: {
       "yellow": "var(--yellow)",
       "black": "var(--black)",
+      'gray-bg': "var(--gray-bg)",
+      'gray': "var(--gray)",
     },
     fontSize: {
       xxxs: "0.625rem", // 10px
