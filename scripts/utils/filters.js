@@ -21,20 +21,20 @@ export function filterByAppliance(recipes, appliance) {
 
 
 
-export function addFilterButton(filterName) {
+export function addFilterButton(filterName, type) {
     const filterContainer = document.querySelector('.filter-container');
     const button = document.createElement('button');
     button.className = 'bg-yellow text-sm flex justify-between items-center rounded-[10px] p-[17px] gap-[60px]';
     button.innerHTML = `<p>${filterName}</p><img src="./assets/svg/close-icon.svg" alt="cross" class="w-[10px] h-[10px] mr-2"/>`;
     button.addEventListener('click', function () {
         removeFilterButton(button);
-        removeFilter('ingredients', filterName);  // Ajustez selon le type du filtre
+        removeFilter(type, filterName);
     }, false);
     filterContainer.appendChild(button);
 }
 
 export function removeFilterButton(element) {
     element.remove();
-    // Pas besoin d'appeler displayAllRecipes ici, car removeFilter le fait déjà
+
 }
 

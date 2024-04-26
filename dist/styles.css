@@ -1487,16 +1487,16 @@ html {
   gap: 55px;
 }
 
+.gap-\[60px\] {
+  gap: 60px;
+}
+
 .gap-\[63px\] {
   gap: 63px;
 }
 
 .gap-\[66px\] {
   gap: 66px;
-}
-
-.gap-\[60px\] {
-  gap: 60px;
 }
 
 .space-x-2 > :not([hidden]) ~ :not([hidden]) {
@@ -2130,16 +2130,8 @@ html {
   padding: 0.5rem;
 }
 
-.p-5 {
-  padding: 1.25rem;
-}
-
 .p-\[10px\] {
   padding: 10px;
-}
-
-.p-\[18px\] {
-  padding: 18px;
 }
 
 .p-\[17px\] {

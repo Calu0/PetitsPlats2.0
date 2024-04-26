@@ -47,9 +47,10 @@ function getUstensiles(recipes) {
     return ustensiles;
 }
 
+
+
 export function applyFilters() {
     let filteredRecipes = recipes;
-
 
     if (activeFilters.ingredients.length > 0) {
         filteredRecipes = filteredRecipes.filter(recipe =>
@@ -58,7 +59,6 @@ export function applyFilters() {
             )
         );
     }
-
 
     if (activeFilters.appliances.length > 0) {
         filteredRecipes = filteredRecipes.filter(recipe =>
@@ -78,7 +78,10 @@ export function applyFilters() {
 
     displayAllRecipes(filteredRecipes);
     currentFilteredRecipes = filteredRecipes;
+
+
 }
+
 
 
 function addFilter(type, value) {
@@ -97,59 +100,73 @@ export function removeFilter(type, value) {
 }
 
 
+function fillAndShowList(items, selector) {
+
+    const dropdownContent = document.querySelector(selector);
+    const listElement = dropdownContent.querySelector('ul');
+    listElement.innerHTML = '';
+    items.forEach(item => {
+        listElement.innerHTML += `<li class='hover:bg-yellow px-4 py-[6px] cursor-pointer'>${item}</li>`;
+    });
+    dropdownContent.classList.toggle('hidden');
+
+}
+
+
+
+// add event listeners to the buttons to show the dropdowns when clicked and fill them with the appropriate items
 document.addEventListener('DOMContentLoaded', () => {
 
-    // NON FILTERED , TO CHANGE
-    const ingredients = getIngredients(currentFilteredRecipes);
-    const appareils = getAppareils(currentFilteredRecipes);
-    const ustensiles = getUstensiles(currentFilteredRecipes);
-
-    function fillAndShowList(items, selector) {
-
-        const dropdownContent = document.querySelector(selector);
-        const listElement = dropdownContent.querySelector('ul');
-        listElement.innerHTML = '';
-        items.forEach(item => {
-            listElement.innerHTML += `<li class='hover:bg-yellow px-4 py-[6px] cursor-pointer'>${item}</li>`;
-        });
-        dropdownContent.classList.toggle('hidden');
-
-    }
-
     document.querySelector('.select__ingredients .button__ingredients').addEventListener('click', function () {
+        const ingredients = getIngredients(currentFilteredRecipes);
         fillAndShowList(ingredients, '.select__ingredients .ingredients-dropdown');
-
     });
 
     document.querySelector('.select__appareils .button__appareils').addEventListener('click', function () {
+        const appareils = getAppareils(currentFilteredRecipes);
         fillAndShowList(appareils, '.select__appareils .appareils-dropdown');
     });
 
     document.querySelector('.select__ustensiles .button__ustensiles').addEventListener('click', function () {
+        const ustensiles = getUstensiles(currentFilteredRecipes);
         fillAndShowList(ustensiles, '.select__ustensiles .ustensiles-dropdown');
     });
+
+
 });
 
+
+function closeDropdown(selector) {
+    const dropdownContent = document.querySelector(selector);
+    if (!dropdownContent.classList.contains('hidden')) {
+        dropdownContent.classList.add('hidden');
+    }
+}
 
 // filter by ingredient
 document.querySelector('.select__ingredients .ingredients-dropdown ul').addEventListener('click', function (e) {
     const ingredient = e.target.innerText;
-    addFilterButton(ingredient);
+    addFilterButton(ingredient, 'ingredients');
     addFilter('ingredients', ingredient);
+    closeDropdown('.select__ingredients .ingredients-dropdown');
 });
 
-// filter by appareils
+
+// filter by appliance
 document.querySelector('.select__appareils .appareils-dropdown ul').addEventListener('click', function (e) {
     const appliance = e.target.innerText;
-    addFilterButton(appliance);
+    addFilterButton(appliance, 'appliances');
     addFilter('appliances', appliance);
+    closeDropdown('.select__appareils .appareils-dropdown');
 });
 
-// filter by ustenstiles
+
+// filter by ustensils
 document.querySelector('.select__ustensiles .ustensiles-dropdown ul').addEventListener('click', function (e) {
-    const utensils = e.target.innerText;
-    addFilterButton(utensils);
-    addFilter('utensils', utensils);
+    const utensil = e.target.innerText;
+    addFilterButton(utensil, 'utensils');
+    addFilter('utensils', utensil);
+    closeDropdown('.select__ustensiles .ustensiles-dropdown');
 });
 
 
