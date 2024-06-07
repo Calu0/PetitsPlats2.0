@@ -742,6 +742,10 @@ html {
   clear: none;
 }
 
+.mb-24 {
+  margin-bottom: 6rem;
+}
+
 .mb-\[60px\] {
   margin-bottom: 60px;
 }
@@ -2270,6 +2274,10 @@ html {
 
 .text-\[44px\] {
   font-size: 44px;
+}
+
+.text-lg {
+  font-size: 1.125rem;
 }
 
 .text-sm {
