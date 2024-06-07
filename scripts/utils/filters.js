@@ -1,44 +1,21 @@
 import { removeFilter } from '../pages/index.js';
 
 export function filterByIngredient(recipes, ingredient) {
-    const filteredRecipes = [];
-    for (let i = 0; i < recipes.length; i++) {
-        let recipe = recipes[i];
-        for (let j = 0; j < recipe.ingredients.length; j++) {
-            let ing = recipe.ingredients[j];
-            if (ing.ingredient.toLowerCase().includes(ingredient.toLowerCase())) {
-                filteredRecipes.push(recipe);
-                break;
-            }
-        }
-    }
-    return filteredRecipes;
+    return recipes.filter(recipe =>
+        recipe.ingredients.some(ing => ing.ingredient.toLowerCase().includes(ingredient.toLowerCase()))
+    );
 }
 
 export function filterByUstensil(recipes, ustensil) {
-    const filteredRecipes = [];
-    for (let i = 0; i < recipes.length; i++) {
-        let recipe = recipes[i];
-        for (let j = 0; j < recipe.ustensils.length; j++) {
-            let u = recipe.ustensils[j];
-            if (u.toLowerCase().includes(ustensil.toLowerCase())) {
-                filteredRecipes.push(recipe);
-                break;
-            }
-        }
-    }
-    return filteredRecipes;
+    return recipes.filter(recipe =>
+        recipe.ustensils.some(u => u.toLowerCase().includes(ustensil.toLowerCase()))
+    );
 }
 
 export function filterByAppliance(recipes, appliance) {
-    const filteredRecipes = [];
-    for (let i = 0; i < recipes.length; i++) {
-        let recipe = recipes[i];
-        if (recipe.appliance.toLowerCase().includes(appliance.toLowerCase())) {
-            filteredRecipes.push(recipe);
-        }
-    }
-    return filteredRecipes;
+    return recipes.filter(recipe =>
+        recipe.appliance.toLowerCase().includes(appliance.toLowerCase())
+    );
 }
 
 export function addFilterButton(filterName, type) {
@@ -54,12 +31,5 @@ export function addFilterButton(filterName, type) {
 }
 
 export function removeFilterButton(element) {
-    const filterContainer = document.querySelector('.filter-container');
-    const buttons = filterContainer.children;
-    for (let i = 0; i < buttons.length; i++) {
-        if (buttons[i] === element) {
-            filterContainer.removeChild(buttons[i]);
-            break;
-        }
-    }
+    element.remove();
 }
