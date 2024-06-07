@@ -278,7 +278,6 @@ function displayNoRecipesMessage(searchText) {
     recipesContainer.innerHTML = `
         <div class='flex justify-center text-lg w-full mb-24'>
             <p>Aucune recette ne contient ‘${searchText}’</p>
-            <p>Vous pouvez chercher « tarte aux pommes », « poisson », etc.</p>
         </div>
     `;
 }
