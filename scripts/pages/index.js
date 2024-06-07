@@ -13,80 +13,50 @@ export let activeFilters = {
 
 // Function to get unique ingredients from the recipes
 function getIngredients(recipes) {
-    const ingredients = [];
-    for (let i = 0; i < recipes.length; i++) {
-        for (let j = 0; j < recipes[i].ingredients.length; j++) {
-            let ingredient = recipes[i].ingredients[j].ingredient;
-            let found = false;
-            for (let k = 0; k < ingredients.length; k++) {
-                if (ingredients[k] === ingredient) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                ingredients.push(ingredient);
-            }
-        }
-    }
-    return ingredients;
+    const ingredientsSet = new Set();
+    recipes.forEach(recipe => {
+        recipe.ingredients.forEach(ingredient => {
+            ingredientsSet.add(ingredient.ingredient);
+        });
+    });
+    return Array.from(ingredientsSet);
 }
 
 // Function to get unique appliances from the recipes
 function getAppareils(recipes) {
-    const appareils = [];
-    for (let i = 0; i < recipes.length; i++) {
-        let appliance = recipes[i].appliance;
-        let found = false;
-        for (let j = 0; j < appareils.length; j++) {
-            if (appareils[j] === appliance) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            appareils.push(appliance);
-        }
-    }
-    return appareils;
+    const appliancesSet = new Set();
+    recipes.forEach(recipe => {
+        appliancesSet.add(recipe.appliance);
+    });
+    return Array.from(appliancesSet);
 }
 
 // Function to get unique utensils from the recipes
 function getUstensiles(recipes) {
-    const ustensiles = [];
-    for (let i = 0; i < recipes.length; i++) {
-        for (let j = 0; j < recipes[i].ustensils.length; j++) {
-            let utensil = recipes[i].ustensils[j];
-            let found = false;
-            for (let k = 0; k < ustensiles.length; k++) {
-                if (ustensiles[k] === utensil) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                ustensiles.push(utensil);
-            }
-        }
-    }
-    return ustensiles;
+    const utensilsSet = new Set();
+    recipes.forEach(recipe => {
+        recipe.ustensils.forEach(utensil => {
+            utensilsSet.add(utensil);
+        });
+    });
+    return Array.from(utensilsSet);
 }
 
 // Function to apply filters to the recipes
 export function applyFilters() {
     let filteredRecipes = recipes;
 
-    for (let i = 0; i < activeFilters.ingredients.length; i++) {
-        filteredRecipes = filterByIngredient(filteredRecipes, activeFilters.ingredients[i]);
-    }
+    activeFilters.ingredients.forEach(ingredient => {
+        filteredRecipes = filterByIngredient(filteredRecipes, ingredient);
+    });
 
-    for (let i = 0; i < activeFilters.appliances.length; i++) {
-        filteredRecipes = filterByAppliance(filteredRecipes, activeFilters.appliances[i]);
-    }
+    activeFilters.appliances.forEach(appliance => {
+        filteredRecipes = filterByAppliance(filteredRecipes, appliance);
+    });
 
-    for (let i = 0; i < activeFilters.utensils.length; i++) {
-        filteredRecipes = filterByUstensil(filteredRecipes, activeFilters.utensils[i]);
-    }
+    activeFilters.utensils.forEach(utensil => {
+        filteredRecipes = filterByUstensil(filteredRecipes, utensil);
+    });
 
     currentFilteredRecipes = filteredRecipes;
     updateDropdowns(filteredRecipes);
@@ -106,14 +76,7 @@ function updateDropdowns(filteredRecipes) {
 
 // Function to add a filter and reapply filters
 function addFilter(type, value) {
-    let found = false;
-    for (let i = 0; i < activeFilters[type].length; i++) {
-        if (activeFilters[type][i] === value) {
-            found = true;
-            break;
-        }
-    }
-    if (!found) {
+    if (!activeFilters[type].includes(value)) {
         activeFilters[type].push(value);
         applyFilters();
     }
@@ -121,17 +84,8 @@ function addFilter(type, value) {
 
 // Function to remove a filter and reapply filters
 export function removeFilter(type, value) {
-    let index = -1;
-    for (let i = 0; i < activeFilters[type].length; i++) {
-        if (activeFilters[type][i] === value) {
-            index = i;
-            break;
-        }
-    }
-    if (index !== -1) {
-        activeFilters[type].splice(index, 1);
-        applyFilters();
-    }
+    activeFilters[type] = activeFilters[type].filter(item => item !== value);
+    applyFilters();
 }
 
 // Fill the dropdown with items and show it
@@ -139,40 +93,35 @@ function fillAndShowList(items, selector) {
     const dropdownContent = document.querySelector(selector);
     const listElement = dropdownContent.querySelector('ul');
     listElement.innerHTML = ''; // Clear existing items
-    for (let i = 0; i < items.length; i++) {
+    items.forEach(item => {
         const liElement = document.createElement('li');
         liElement.className = 'hover:bg-yellow px-4 py-[6px] cursor-pointer';
-        liElement.textContent = items[i];
+        liElement.textContent = item;
         listElement.appendChild(liElement);
-    }
+    });
 }
 
 // Filter the dropdown items based on the search input
 function filterDropdownItems(inputId, listSelector, items) {
     const searchText = document.getElementById(inputId).value.toLowerCase();
-    const filteredItems = [];
-    for (let i = 0; i < items.length; i++) {
-        if (items[i].toLowerCase().indexOf(searchText) !== -1) {
-            filteredItems.push(items[i]);
-        }
-    }
+    const filteredItems = items.filter(item => item.toLowerCase().includes(searchText));
     fillAndShowList(filteredItems, listSelector);
 }
 
 // Add event listeners to the search inputs of the ingredients dropdown to filter the items
-document.getElementById('ingredient-search-input').addEventListener('input', function () {
+document.getElementById('ingredient-search-input').addEventListener('input', () => {
     const ingredients = getIngredients(currentFilteredRecipes);
     filterDropdownItems('ingredient-search-input', '.select__ingredients .ingredients-dropdown', ingredients);
 });
 
 // Add event listeners to the search inputs of the appliances dropdown to filter the items
-document.getElementById('appliance-search-input').addEventListener('input', function () {
+document.getElementById('appliance-search-input').addEventListener('input', () => {
     const appliances = getAppareils(currentFilteredRecipes);
     filterDropdownItems('appliance-search-input', '.select__appareils .appareils-dropdown', appliances);
 });
 
 // Add event listeners to the search inputs of the utensils dropdown to filter the items
-document.getElementById('utensil-search-input').addEventListener('input', function () {
+document.getElementById('utensil-search-input').addEventListener('input', () => {
     const utensils = getUstensiles(currentFilteredRecipes);
     filterDropdownItems('utensil-search-input', '.select__ustensiles .ustensiles-dropdown', utensils);
 });
@@ -180,7 +129,7 @@ document.getElementById('utensil-search-input').addEventListener('input', functi
 // Add event listeners for when the page is loaded to show the dropdowns when the buttons are clicked
 document.addEventListener('DOMContentLoaded', () => {
     // Ingredients dropdown    
-    document.querySelector('.select__ingredients .button__ingredients').addEventListener('click', function () {
+    document.querySelector('.select__ingredients .button__ingredients').addEventListener('click', () => {
         const ingredients = getIngredients(currentFilteredRecipes);
         fillAndShowList(ingredients, '.select__ingredients .ingredients-dropdown');
         const dropdownContent = document.querySelector('.select__ingredients .ingredients-dropdown');
@@ -188,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Appliances dropdown
-    document.querySelector('.select__appareils .button__appareils').addEventListener('click', function () {
+    document.querySelector('.select__appareils .button__appareils').addEventListener('click', () => {
         const appareils = getAppareils(currentFilteredRecipes);
         fillAndShowList(appareils, '.select__appareils .appareils-dropdown');
         const dropdownContent = document.querySelector('.select__appareils .appareils-dropdown');
@@ -196,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Utensils dropdown
-    document.querySelector('.select__ustensiles .button__ustensiles').addEventListener('click', function () {
+    document.querySelector('.select__ustensiles .button__ustensiles').addEventListener('click', () => {
         const ustensiles = getUstensiles(currentFilteredRecipes);
         fillAndShowList(ustensiles, '.select__ustensiles .ustensiles-dropdown');
         const dropdownContent = document.querySelector('.select__ustensiles .ustensiles-dropdown');
@@ -212,7 +161,7 @@ function closeDropdown(selector) {
     }
 }
 
-document.addEventListener('click', function (e) {
+document.addEventListener('click', (e) => {
     if (!e.target.closest('.select__ingredients') && !e.target.closest('.button__ingredients')) {
         closeDropdown('.select__ingredients .ingredients-dropdown');
     }
@@ -227,7 +176,7 @@ document.addEventListener('click', function (e) {
 });
 
 // Filter by ingredient
-document.querySelector('.select__ingredients .ingredients-dropdown ul').addEventListener('click', function (e) {
+document.querySelector('.select__ingredients .ingredients-dropdown ul').addEventListener('click', (e) => {
     const ingredient = e.target.innerText;
     addFilterButton(ingredient, 'ingredients');
     addFilter('ingredients', ingredient);
@@ -235,7 +184,7 @@ document.querySelector('.select__ingredients .ingredients-dropdown ul').addEvent
 });
 
 // Filter by appliance
-document.querySelector('.select__appareils .appareils-dropdown ul').addEventListener('click', function (e) {
+document.querySelector('.select__appareils .appareils-dropdown ul').addEventListener('click', (e) => {
     const appliance = e.target.innerText;
     addFilterButton(appliance, 'appliances');
     addFilter('appliances', appliance);
@@ -243,7 +192,7 @@ document.querySelector('.select__appareils .appareils-dropdown ul').addEventList
 });
 
 // Filter by utensils
-document.querySelector('.select__ustensiles .ustensiles-dropdown ul').addEventListener('click', function (e) {
+document.querySelector('.select__ustensiles .ustensiles-dropdown ul').addEventListener('click', (e) => {
     const utensil = e.target.innerText;
     addFilterButton(utensil, 'utensils');
     addFilter('utensils', utensil);
@@ -253,16 +202,12 @@ document.querySelector('.select__ustensiles .ustensiles-dropdown ul').addEventLi
 // Main searchbar, looks for the search text in the recipe name, ingredients, and utensils
 function handleMainSearch() {
     const searchText = document.getElementById('main-search-input').value.toLowerCase();
-    let filteredRecipes = [];
-    for (let i = 0; i < recipes.length; i++) {
-        let recipe = recipes[i];
-        if (recipe.name.toLowerCase().includes(searchText) ||
-            recipe.ingredients.some(ing => ing.ingredient.toLowerCase().includes(searchText)) ||
-            recipe.ustensils.some(u => u.toLowerCase().includes(searchText)) ||
-            recipe.appliance.toLowerCase().includes(searchText)) {
-            filteredRecipes.push(recipe);
-        }
-    }
+    const filteredRecipes = recipes.filter(recipe =>
+        recipe.name.toLowerCase().includes(searchText) ||
+        recipe.ingredients.some(ing => ing.ingredient.toLowerCase().includes(searchText)) ||
+        recipe.ustensils.some(u => u.toLowerCase().includes(searchText)) ||
+        recipe.appliance.toLowerCase().includes(searchText)
+    );
 
     // Display message if no recipes match the search text
     if (filteredRecipes.length === 0) {
@@ -278,12 +223,13 @@ function displayNoRecipesMessage(searchText) {
     recipesContainer.innerHTML = `
         <div class='flex justify-center text-lg w-full mb-24'>
             <p>Aucune recette ne contient ‘${searchText}’</p>
+
         </div>
     `;
 }
 
 document.getElementById('main-search-button').addEventListener('click', handleMainSearch);
-document.getElementById('main-search-input').addEventListener('keyup', function (event) {
+document.getElementById('main-search-input').addEventListener('keyup', (event) => {
     if (event.key === 'Enter') {
         handleMainSearch();
     }
@@ -294,10 +240,10 @@ export function displayAllRecipes(filteredRecipes = recipes) {
     const recipesContainer = document.querySelector('.recipes-container');
     recipesContainer.innerHTML = '';
 
-    for (let i = 0; i < filteredRecipes.length; i++) {
-        const recipeCard = RecipeCardFactory(filteredRecipes[i]);
+    filteredRecipes.forEach(recipe => {
+        const recipeCard = RecipeCardFactory(recipe);
         recipesContainer.innerHTML += recipeCard.getRecipeCardDOM();
-    }
+    });
 }
 
 // Initialize the page by displaying all recipes
