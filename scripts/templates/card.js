@@ -2,7 +2,7 @@
 
 
 export function RecipeCardFactory(data) {
-    const { id, image, name, servings, ingredients, time, description, appliance, ustensils } = data;
+    const { id, image, name, ingredients, time, description } = data;
 
     const shortDescription = description.length > 180 ? `${description.slice(0, 180)}...` : description;
 
