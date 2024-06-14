@@ -69,6 +69,7 @@ function updateDropdowns(filteredRecipes) {
     const appliances = getAppareils(filteredRecipes);
     const utensils = getUstensiles(filteredRecipes);
 
+
     fillAndShowList(ingredients, '.select__ingredients .ingredients-dropdown');
     fillAndShowList(appliances, '.select__appareils .appareils-dropdown');
     fillAndShowList(utensils, '.select__ustensiles .ustensiles-dropdown');
@@ -244,11 +245,15 @@ export function displayAllRecipes(filteredRecipes = recipes) {
         const recipeCard = RecipeCardFactory(recipe);
         recipesContainer.innerHTML += recipeCard.getRecipeCardDOM();
     });
+
+    const totalElement = document.getElementById('total');
+    totalElement.innerText = `${filteredRecipes.length} recettes trouvées`;
 }
 
 // Initialize the page by displaying all recipes
 const init = () => {
     displayAllRecipes();
+
 }
 
 init();
