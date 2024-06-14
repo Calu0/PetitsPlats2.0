@@ -298,6 +298,10 @@ export function displayAllRecipes(filteredRecipes = recipes) {
         const recipeCard = RecipeCardFactory(filteredRecipes[i]);
         recipesContainer.innerHTML += recipeCard.getRecipeCardDOM();
     }
+
+
+    const totalElement = document.getElementById('total');
+    totalElement.innerText = `${filteredRecipes.length} recettes trouvées`;
 }
 
 // Initialize the page by displaying all recipes
