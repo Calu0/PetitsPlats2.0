@@ -2288,6 +2288,14 @@ html {
   font-size: 0.75rem;
 }
 
+.text-xl {
+  font-size: 1.563rem;
+}
+
+.text-\[20px\] {
+  font-size: 20px;
+}
+
 .font-bold {
   font-weight: 700;
 }
