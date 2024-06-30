@@ -11,32 +11,38 @@ export let activeFilters = {
     utensils: []
 };
 
-// Function to get unique ingredients from the recipes
+// Function to get unique ingredients from the recipes excluding selected ones
 function getIngredients(recipes) {
     const ingredientsSet = new Set();
     recipes.forEach(recipe => {
         recipe.ingredients.forEach(ingredient => {
-            ingredientsSet.add(ingredient.ingredient);
+            if (!activeFilters.ingredients.includes(ingredient.ingredient)) {
+                ingredientsSet.add(ingredient.ingredient);
+            }
         });
     });
     return Array.from(ingredientsSet);
 }
 
-// Function to get unique appliances from the recipes
+// Function to get unique appliances from the recipes excluding selected ones
 function getAppareils(recipes) {
     const appliancesSet = new Set();
     recipes.forEach(recipe => {
-        appliancesSet.add(recipe.appliance);
+        if (!activeFilters.appliances.includes(recipe.appliance)) {
+            appliancesSet.add(recipe.appliance);
+        }
     });
     return Array.from(appliancesSet);
 }
 
-// Function to get unique utensils from the recipes
+// Function to get unique utensils from the recipes excluding selected ones
 function getUstensiles(recipes) {
     const utensilsSet = new Set();
     recipes.forEach(recipe => {
         recipe.ustensils.forEach(utensil => {
-            utensilsSet.add(utensil);
+            if (!activeFilters.utensils.includes(utensil)) {
+                utensilsSet.add(utensil);
+            }
         });
     });
     return Array.from(utensilsSet);
@@ -68,7 +74,6 @@ function updateDropdowns(filteredRecipes) {
     const ingredients = getIngredients(filteredRecipes);
     const appliances = getAppareils(filteredRecipes);
     const utensils = getUstensiles(filteredRecipes);
-
 
     fillAndShowList(ingredients, '.select__ingredients .ingredients-dropdown');
     fillAndShowList(appliances, '.select__appareils .appareils-dropdown');
@@ -105,8 +110,12 @@ function fillAndShowList(items, selector) {
 // Filter the dropdown items based on the search input
 function filterDropdownItems(inputId, listSelector, items) {
     const searchText = document.getElementById(inputId).value.toLowerCase();
-    const filteredItems = items.filter(item => item.toLowerCase().includes(searchText));
-    fillAndShowList(filteredItems, listSelector);
+    if (searchText.length >= 3) {
+        const filteredItems = items.filter(item => item.toLowerCase().includes(searchText));
+        fillAndShowList(filteredItems, listSelector);
+    } else {
+        fillAndShowList(items, listSelector);
+    }
 }
 
 // Add event listeners to the search inputs of the ingredients dropdown to filter the items
@@ -182,6 +191,8 @@ document.querySelector('.select__ingredients .ingredients-dropdown ul').addEvent
     addFilterButton(ingredient, 'ingredients');
     addFilter('ingredients', ingredient);
     closeDropdown('.select__ingredients .ingredients-dropdown');
+    document.getElementById('ingredient-search-input').value = '';
+    document.getElementById('main-search-input').value = '';
 });
 
 // Filter by appliance
@@ -190,6 +201,8 @@ document.querySelector('.select__appareils .appareils-dropdown ul').addEventList
     addFilterButton(appliance, 'appliances');
     addFilter('appliances', appliance);
     closeDropdown('.select__appareils .appareils-dropdown');
+    document.getElementById('ingredient-search-input').value = '';
+    document.getElementById('main-search-input').value = '';
 });
 
 // Filter by utensils
@@ -198,10 +211,19 @@ document.querySelector('.select__ustensiles .ustensiles-dropdown ul').addEventLi
     addFilterButton(utensil, 'utensils');
     addFilter('utensils', utensil);
     closeDropdown('.select__ustensiles .ustensiles-dropdown');
+    document.getElementById('ingredient-search-input').value = '';
+    document.getElementById('main-search-input').value = '';
 });
 
 // Main searchbar, looks for the search text in the recipe name, ingredients, and utensils
 function handleMainSearch() {
+    activeFilters.ingredients = [];
+    activeFilters.appliances = [];
+    activeFilters.utensils = [];
+
+    document.querySelector('.filter-container').innerHTML = '';
+    updateDropdowns(recipes);
+
     const searchText = document.getElementById('main-search-input').value.toLowerCase();
     const filteredRecipes = recipes.filter(recipe =>
         recipe.name.toLowerCase().includes(searchText) ||
@@ -253,7 +275,7 @@ export function displayAllRecipes(filteredRecipes = recipes) {
 // Initialize the page by displaying all recipes
 const init = () => {
     displayAllRecipes();
-
+    updateDropdowns(recipes);
 }
 
 init();
