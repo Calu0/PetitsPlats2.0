@@ -110,6 +110,11 @@ function fillAndShowList(items, selector) {
 // Filter the dropdown items based on the search input
 function filterDropdownItems(inputId, listSelector, items) {
     const searchText = document.getElementById(inputId).value.toLowerCase();
+    const SpecialCharactersRegex = /[^a-zA-ZÀ-ÿ0-9\s]/g;
+
+    if (SpecialCharactersRegex.test(searchText)) {
+        return;
+    }
     if (searchText.length >= 3) {
         const filteredItems = items.filter(item => item.toLowerCase().includes(searchText));
         fillAndShowList(filteredItems, listSelector);
