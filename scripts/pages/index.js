@@ -138,6 +138,7 @@ document.getElementById('utensil-search-input').addEventListener('input', () => 
 
 // Add event listeners for when the page is loaded to show the dropdowns when the buttons are clicked
 document.addEventListener('DOMContentLoaded', () => {
+
     // Ingredients dropdown    
     document.querySelector('.select__ingredients .button__ingredients').addEventListener('click', () => {
         const ingredients = getIngredients(currentFilteredRecipes);
@@ -224,6 +225,8 @@ function handleMainSearch() {
     document.querySelector('.filter-container').innerHTML = '';
     updateDropdowns(recipes);
 
+    const SpecialCharactersRegex = /[^a-zA-ZÀ-ÿ0-9\s]/g;
+
     const searchText = document.getElementById('main-search-input').value.toLowerCase();
     const filteredRecipes = recipes.filter(recipe =>
         recipe.name.toLowerCase().includes(searchText) ||
@@ -235,15 +238,19 @@ function handleMainSearch() {
     if (searchText === '') {
         displayAllRecipes();
     } else
+        if (SpecialCharactersRegex.test(searchText)) {
+            displayNoSpecialCharactersMessage();
 
-        if (searchText.length < 3) {
-            displayNotEnoughCharactersMessage();
         } else
-            if (filteredRecipes.length === 0) {
-                displayNoRecipesMessage(searchText);
-            } else {
-                displayAllRecipes(filteredRecipes);
-            }
+
+            if (searchText.length < 3) {
+                displayNotEnoughCharactersMessage();
+            } else
+                if (filteredRecipes.length === 0) {
+                    displayNoRecipesMessage(searchText);
+                } else {
+                    displayAllRecipes(filteredRecipes);
+                }
 }
 
 // Function to display message when no recipes match the search text
@@ -262,6 +269,15 @@ function displayNotEnoughCharactersMessage() {
     recipesContainer.innerHTML = `
         <div class='flex justify-center text-lg w-full mb-24'>
             <p>Veuillez saisir au moins 3 caractères</p>
+        </div>
+    `;
+}
+
+function displayNoSpecialCharactersMessage() {
+    const recipesContainer = document.querySelector('.recipes-container');
+    recipesContainer.innerHTML = `
+        <div class='flex justify-center text-lg w-full mb-24'>
+            <p>Caractères spéciaux non autorisés</p>
         </div>
     `;
 }
