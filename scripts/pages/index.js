@@ -290,12 +290,17 @@ function handleMainSearch() {
         }
     }
 
-    // Display message if no recipes match the search text
-    if (filteredRecipes.length === 0) {
-        displayNoRecipesMessage(searchText);
-    } else {
-        displayAllRecipes(filteredRecipes);
-    }
+    if (searchText === '') {
+        displayAllRecipes(recipes);
+    } else
+        if (searchText.length < 3) {
+            displayNotEnoughCharactersMessage();
+        } else
+            if (filteredRecipes.length === 0) {
+                displayNoRecipesMessage(searchText);
+            } else {
+                displayAllRecipes(filteredRecipes);
+            }
 }
 
 // Function to display message when no recipes match the search text
@@ -304,6 +309,15 @@ function displayNoRecipesMessage(searchText) {
     recipesContainer.innerHTML = `
         <div class='flex justify-center text-lg w-full mb-24'>
             <p>Aucune recette ne contient ‘${searchText}’</p>
+        </div>
+    `;
+}
+
+function displayNotEnoughCharactersMessage() {
+    const recipesContainer = document.querySelector('.recipes-container');
+    recipesContainer.innerHTML = `
+        <div class='flex justify-center text-lg w-full mb-24'>
+            <p>Veuillez saisir au moins 3 caractères</p>
         </div>
     `;
 }
