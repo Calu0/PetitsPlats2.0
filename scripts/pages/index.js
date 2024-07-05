@@ -272,6 +272,7 @@ function handleMainSearch() {
     activeFilters.ingredients = [];
     activeFilters.appliances = [];
     activeFilters.utensils = [];
+    const SpecialCharactersRegex = /[^a-zA-ZÀ-ÿ0-9\s]/g;
 
 
     document.querySelector('.filter-container').innerHTML = '';
@@ -293,14 +294,17 @@ function handleMainSearch() {
     if (searchText === '') {
         displayAllRecipes(recipes);
     } else
-        if (searchText.length < 3) {
-            displayNotEnoughCharactersMessage();
+        if (SpecialCharactersRegex.test(searchText)) {
+            displayNoSpecialCharactersMessage();
         } else
-            if (filteredRecipes.length === 0) {
-                displayNoRecipesMessage(searchText);
-            } else {
-                displayAllRecipes(filteredRecipes);
-            }
+            if (searchText.length < 3) {
+                displayNotEnoughCharactersMessage();
+            } else
+                if (filteredRecipes.length === 0) {
+                    displayNoRecipesMessage(searchText);
+                } else {
+                    displayAllRecipes(filteredRecipes);
+                }
 }
 
 // Function to display message when no recipes match the search text
@@ -318,6 +322,15 @@ function displayNotEnoughCharactersMessage() {
     recipesContainer.innerHTML = `
         <div class='flex justify-center text-lg w-full mb-24'>
             <p>Veuillez saisir au moins 3 caractères</p>
+        </div>
+    `;
+}
+
+function displayNoSpecialCharactersMessage() {
+    const recipesContainer = document.querySelector('.recipes-container');
+    recipesContainer.innerHTML = `
+        <div class='flex justify-center text-lg w-full mb-24'>
+            <p>Caractères spéciaux non autorisés</p>
         </div>
     `;
 }
