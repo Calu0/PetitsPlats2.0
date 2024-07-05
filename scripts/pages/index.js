@@ -3,6 +3,7 @@ import { recipes } from '../../data/recipes.js';
 import { RecipeCardFactory } from '../templates/card.js';
 import { addFilterButton, filterByIngredient, filterByUstensil, filterByAppliance } from '../utils/filters.js';
 
+
 // Initialize variables for current filtered recipes and active filters
 export let currentFilteredRecipes = recipes;
 export let activeFilters = {
@@ -48,9 +49,9 @@ function getUstensiles(recipes) {
     return Array.from(utensilsSet);
 }
 
-// Function to apply filters to the recipes
-export function applyFilters() {
-    let filteredRecipes = recipes;
+// Function to apply filters to the recipes and update dropdowns
+export function applyFilters(baseRecipes = recipes) {
+    let filteredRecipes = baseRecipes;
 
     activeFilters.ingredients.forEach(ingredient => {
         filteredRecipes = filterByIngredient(filteredRecipes, ingredient);
@@ -65,12 +66,12 @@ export function applyFilters() {
     });
 
     currentFilteredRecipes = filteredRecipes;
-    updateDropdowns(filteredRecipes);
     displayAllRecipes(filteredRecipes);
+    updateDropdownsWithFilteredRecipes(filteredRecipes);
 }
 
 // Function to update the dropdowns based on the filtered recipes
-function updateDropdowns(filteredRecipes) {
+function updateDropdownsWithFilteredRecipes(filteredRecipes) {
     const ingredients = getIngredients(filteredRecipes);
     const appliances = getAppareils(filteredRecipes);
     const utensils = getUstensiles(filteredRecipes);
@@ -84,21 +85,21 @@ function updateDropdowns(filteredRecipes) {
 function addFilter(type, value) {
     if (!activeFilters[type].includes(value)) {
         activeFilters[type].push(value);
-        applyFilters();
+        applyFilters(currentFilteredRecipes);
     }
 }
 
 // Function to remove a filter and reapply filters
 export function removeFilter(type, value) {
     activeFilters[type] = activeFilters[type].filter(item => item !== value);
-    applyFilters();
+    applyFilters(recipes);
 }
 
 // Fill the dropdown with items and show it
 function fillAndShowList(items, selector) {
     const dropdownContent = document.querySelector(selector);
     const listElement = dropdownContent.querySelector('ul');
-    listElement.innerHTML = ''; // Clear existing items
+    listElement.innerHTML = '';
     items.forEach(item => {
         const liElement = document.createElement('li');
         liElement.className = 'hover:bg-yellow px-4 py-[6px] cursor-pointer';
@@ -227,12 +228,22 @@ function handleMainSearch() {
     activeFilters.appliances = [];
     activeFilters.utensils = [];
 
-    document.querySelector('.filter-container').innerHTML = '';
-    updateDropdowns(recipes);
-
     const SpecialCharactersRegex = /[^a-zA-ZÀ-ÿ0-9\s]/g;
-
     const searchText = document.getElementById('main-search-input').value.toLowerCase();
+
+    // Display messages based on input validation
+    if (searchText === '') {
+        applyFilters(recipes);
+        return;
+    } else if (SpecialCharactersRegex.test(searchText)) {
+        displayNoSpecialCharactersMessage();
+        return;
+    } else if (searchText.length < 3) {
+        displayNotEnoughCharactersMessage();
+        return;
+    }
+
+    // Filter recipes based on search text
     const filteredRecipes = recipes.filter(recipe =>
         recipe.name.toLowerCase().includes(searchText) ||
         recipe.ingredients.some(ing => ing.ingredient.toLowerCase().includes(searchText)) ||
@@ -240,22 +251,13 @@ function handleMainSearch() {
         recipe.appliance.toLowerCase().includes(searchText)
     );
 
-    if (searchText === '') {
-        displayAllRecipes();
-    } else
-        if (SpecialCharactersRegex.test(searchText)) {
-            displayNoSpecialCharactersMessage();
-
-        } else
-
-            if (searchText.length < 3) {
-                displayNotEnoughCharactersMessage();
-            } else
-                if (filteredRecipes.length === 0) {
-                    displayNoRecipesMessage(searchText);
-                } else {
-                    displayAllRecipes(filteredRecipes);
-                }
+    // Display messages or filtered recipes
+    if (filteredRecipes.length === 0) {
+        displayNoRecipesMessage(searchText);
+    } else {
+        currentFilteredRecipes = filteredRecipes;
+        applyFilters(currentFilteredRecipes);
+    }
 }
 
 // Function to display message when no recipes match the search text
@@ -264,7 +266,6 @@ function displayNoRecipesMessage(searchText) {
     recipesContainer.innerHTML = `
         <div class='flex justify-center text-lg w-full mb-24'>
             <p>Aucune recette ne contient ‘${searchText}’</p>
-
         </div>
     `;
 }
@@ -310,8 +311,7 @@ export function displayAllRecipes(filteredRecipes = recipes) {
 
 // Initialize the page by displaying all recipes
 const init = () => {
-    displayAllRecipes();
-    updateDropdowns(recipes);
+    applyFilters(recipes);
 }
 
 init();

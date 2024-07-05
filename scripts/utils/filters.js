@@ -21,7 +21,7 @@ export function filterByAppliance(recipes, appliance) {
 export function addFilterButton(filterName, type) {
     const filterContainer = document.querySelector('.filter-container');
     const button = document.createElement('button');
-    button.className = 'bg-yellow text-sm flex justify-between items-center rounded-[10px] p-[17px] gap-[60px]';
+    button.className = 'filterBtn bg-yellow text-sm flex justify-between items-center rounded-[10px] p-[17px] gap-[60px]';
     button.innerHTML = `<p>${filterName}</p><img src="./assets/svg/close-icon.svg" alt="cross" class="w-[10px] h-[10px] mr-2"/>`;
     button.addEventListener('click', function () {
         removeFilterButton(button);
@@ -32,4 +32,5 @@ export function addFilterButton(filterName, type) {
 
 export function removeFilterButton(element) {
     element.remove();
+
 }
