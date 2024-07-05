@@ -156,17 +156,22 @@ function fillAndShowList(items, selector) {
 // Filter the dropdown items based on the search input
 function filterDropdownItems(inputId, listSelector, items) {
     const searchText = document.getElementById(inputId).value.toLowerCase();
-    if (searchText.length >= 3) {
-        const filteredItems = [];
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].toLowerCase().indexOf(searchText) !== -1) {
-                filteredItems.push(items[i]);
+    const SpecialCharactersRegex = /[^a-zA-ZÀ-ÿ0-9\s]/g;
+
+    if (SpecialCharactersRegex.test(searchText)) {
+        return;
+    } else
+        if (searchText.length >= 3) {
+            const filteredItems = [];
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].toLowerCase().indexOf(searchText) !== -1) {
+                    filteredItems.push(items[i]);
+                }
             }
+            fillAndShowList(filteredItems, listSelector);
+        } else {
+            fillAndShowList(items, listSelector);
         }
-        fillAndShowList(filteredItems, listSelector);
-    } else {
-        fillAndShowList(items, listSelector);
-    }
 }
 
 // Add event listeners to the search inputs of the ingredients dropdown to filter the items
