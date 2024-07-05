@@ -243,6 +243,11 @@ function handleMainSearch() {
         return;
     }
 
+    //delete all active filters buttons
+    const filterContainer = document.querySelector('.filter-container');
+    filterContainer.innerHTML = '';
+
+
     // Filter recipes based on search text
     const filteredRecipes = recipes.filter(recipe =>
         recipe.name.toLowerCase().includes(searchText) ||
